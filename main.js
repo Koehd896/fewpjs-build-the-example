@@ -4,15 +4,37 @@ const FULL_HEART = '♥'
 
 // Your JavaScript code goes here!
 
+// DOMcontentLoaded
+
+document.addEventListener("DOMContentLoaded", addLikeListen);
+
 function addLikeListen () {
   const hearts = document.getElementsByClassName("like-glyph");
   for (const span of hearts) {
     span.addEventListener("click", addLike)
-  }
+  } 
+  
 }
 
-function addLike() {
-  
+function addLike(event) {
+  mimicServerCall()
+  .then(rsp, function() {
+    const heart = event.trigger;
+    if (heart.innerHTML == FULL_HEART) {
+      heart.innerHTML = EMPTY_HEART;
+      heart.classList.remove("activated-heart")
+    }
+    else {
+      heart.innerHTML = FULL_HEART;
+      heart.classList.add("activated-heart");
+    }
+  })
+  .catch(function(error) {
+    const modal = document.getElementById("modal");
+    modal.classList.remove("hidden");
+    modal.innerHTML = error.message;
+    window.setTimeout(() => modal.classList.add("hidden"), 3000);
+  })
 }
 
 
